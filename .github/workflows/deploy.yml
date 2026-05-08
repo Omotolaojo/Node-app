@@ -1,40 +1,38 @@
 name: Deploy to Azure VM
 
-
 on:
-
   push:
-
     branches: [ master]
 
-
 jobs:
-
   deploy:
-
     runs-on: ubuntu-latest
 
-
     steps:
-
     - name: Deploy via SSH
-
       uses: appleboy/ssh-action@v0.1.6
-
       with:
-
         host: ${{ secrets.VM_IP }}
-
         username: ${{ secrets.VM_USER }}
-
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-
         script: |
-
-          cd Node-app
-
-          git pull origin master
-
-          npm install
-
-          pm2 restart my-app
+          set -e
+          echo "Current directory: $(pwd)"
+          echo "Listing home directory:"
+          ls -la
+          
+          if [ -d "Node-app" ]; then
+            echo "Node-app directory found"
+            cd Node-app
+            pwd
+            echo "Git status before pull:"
+            git status
+            git pull origin master || echo "Git pull failed"
+            npm install
+            pm2 restart my-app || pm2 start index.js --name "my-app"
+          else
+            echo "ERROR: node-app directory not found!"
+            echo "Available directories:"
+            ls -la
+            exit 1
+          fi
