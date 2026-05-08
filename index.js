@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
 
-  res.send('🚀 New DevOps Capstone App is Running Today!');
+  res.send('🚀 Final Test of New DevOps Capstone App is Running Today!');
 
 });
 
